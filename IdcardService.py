@@ -56,38 +56,8 @@ class IdCardService():
         else:
             return False
 
-    def idcard(self,img_path):
-
-        # 定义文件路径
-        # img_path = "/Users/jiaxiaoyu/Desktop/PaddleOCR/ouput/2.jpg"
-
-        # 获取模型检测结果
-        result = self.ocr.ocr(img_path, cls=True)
-
-        # 将检测到的文字放到一个列表中
-        # txts = [line[1][0] for line in result]
-        txts = []
-        for idx in range(len(result)):
-            res = result[idx]
-            for line in res:
-                # 判断可信度
-                # if line[1][1] >= 0.8:
-                txts.append(line[1][0])
-                # else: 
-                #     raise Exception('可信度小于0.8',line[1])
-
-        # 将文本列表合成一个字符串
-        txt = ''.join(txts)
-        # 处理字符串
-        postprocessing = IdCardInfoHandler()
-        # 将结果送入到后处理模型中
-        id_result = {}
-        if(self.is_in(txt,r'(姓|名|性|别|族|出|生|住|址)')):
-            id_result = postprocessing.idcard1(txt)
-        else:
-            id_result = postprocessing.idcard2(txt)
-
-        # 图片识别结果 保存到./result目录中
+    def recordImg(self, result, img_path):
+        # 记录图片识别结果 保存到./result目录中
         result = result[0]
         image = object
         if "http" in img_path:
@@ -106,6 +76,40 @@ class IdCardService():
         if not os.path.exists('result'):
             os.mkdir('result')
         im_show.save('./result/' + str(int(time.time())) + '.jpg')
+
+    def idcard(self,img_path):
+
+        # 定义文件路径
+        # img_path = "/Users/jiaxiaoyu/Desktop/PaddleOCR/ouput/2.jpg"
+
+        # 获取模型检测结果
+        result = self.ocr.ocr(img_path, cls=True)
+
+        # 记录图片识别结果 保存到./result目录中
+        self.recordImg(result, img_path)
+
+        # 将检测到的文字放到一个列表中
+        # txts = [line[1][0] for line in result]
+        txts = []
+        for idx in range(len(result)):
+            res = result[idx]
+            for line in res:
+                # 判断置信度
+                # if line[1][1] >= 0.8:
+                txts.append(line[1][0])
+                # else: 
+                #     raise Exception('可信度小于0.8',line[1])
+
+        # 将文本列表合成一个字符串
+        txt = ''.join(txts)
+        # 处理字符串
+        postprocessing = IdCardInfoHandler()
+        # 将结果送入到后处理模型中
+        id_result = {}
+        if(self.is_in(txt,r'(姓|名|性|别|族|出|生|住|址)')):
+            id_result = postprocessing.idcard1(txt)
+        else:
+            id_result = postprocessing.idcard2(txt)
 
         return id_result
 

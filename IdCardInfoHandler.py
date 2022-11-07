@@ -35,8 +35,7 @@ class IdCardInfoHandler:
             # return json.dumps( result, ensure_ascii = False )
             return result
         else:
-            print("识别错误：", txt, r)
-            return {}
+            raise Exception("识别错误：", txt, r)
 
     # 识别国徽面
     def idcard2(self,data):
@@ -58,5 +57,4 @@ class IdCardInfoHandler:
                 # return json.dumps( result, ensure_ascii = False )
                 return result
             else:
-                print("识别错误：", txt, r)
-                return {}
+                raise Exception("识别错误：", txt, r)
