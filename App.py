@@ -1,6 +1,6 @@
 from flask import Flask,request
 from IdcardService import IdCardService
-import nacos,requests,time,threading
+import requests,time,threading
 
 app = Flask(__name__)
 #处理乱码
@@ -8,7 +8,8 @@ app.config['JSON_AS_ASCII']=False
 
 idCardService = IdCardService()
 
-
+# 是否注册Nacso
+nacosOpne = False
 # Nacos服务器地址
 serviceAddress = "106.13.204.178:8849"
 # Nacos注册服务名
@@ -22,7 +23,7 @@ servicePort = 9000
 @app.route('/api/ocr/idcard',methods=["POST"])
 def idcard():
     r = {}
-    if not request.files.get('image_file') or  not request.json.get('image_url'):
+    if not request.files.get('image_file') and  not request.json.get('image_url'):
         return {'code':500, 'message':'缺少参数image_file或image_url', 'data': {}}
 
     try:
@@ -66,10 +67,14 @@ def service_beat():
         print("已注册服务，执行心跳服务，续期服务响应状态： {}".format(res))
         time.sleep(5)
 
-#发布http服务，并且注册到nocos
-if __name__ == '__main__':
+def nacos():
     service_register()
     #5秒以后，异步执行service_beat()方法
     threading.Timer(5,service_beat).start()
+
+#发布http服务，并且注册到nocos
+if __name__ == '__main__':
+    if nacosOpne:
+        nacos()
     # 指定port, 运行app
     app.run(debug=True, port=servicePort)
