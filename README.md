@@ -104,9 +104,7 @@ serviceIp = '127.0.0.1'
 servicePort = 9000
 ```
 
-
-
-
+参考：https://www.pudn.com/news/6306ec3cf8728f1f6c82d5b4.html
 
 ### 五、其它
 
@@ -120,3 +118,30 @@ servicePort = 9000
 ```sh
 pipreqs . --encoding=utf8 --force
 ```
+
+
+
+当上传这张图片时会出现异常，上传其它图片都没问题。
+
+```json
+{
+    "code": 500,
+    "data": {},
+    "message": "all the input array dimensions for the concatenation axis must match exactly, but along dimension 2, the array at index 0 has size 4 and the array at index 1 has size 3"
+}
+```
+
+![image-20221109021154708](README/image-20221109021154708.png)
+
+![uTools_1667929813326](README/uTools_1667929813326.png)
+
+![img](README/uTools_1667929497497-20221109021053476.png)
+
+产生过很多怀疑，尝试了大概两个小时，找出问题是少写了`convert('RGB')`,如上图所见，第二张我把它截图后再尝试也是不行的，不知道是触发了什么。
+
+```python
+image = Image.open(BytesIOObj)
+# 更改后 原因竟然是没有添加.convert('RGB') 但就这一张图片不行就奇怪了。
+image = Image.open(BytesIOObj).convert('RGB')
+```
+

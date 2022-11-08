@@ -8,6 +8,8 @@ from io import BytesIO
 # logging.disable(logging.DEBUG)  # 关闭DEBUG日志的打印
 # logging.disable(logging.WARNING)  # 关闭WARNING日志的打印
 
+# 初始化ocr模型和后处理模型 只需要运行一次就可以下载并将模型加载到内存中
+OCR = PaddleOCR(use_angle_cls=True, lang="ch")
 class IdCardService():
     """
         PaddleOCR(use_angle_cls=True, lang="ch")
@@ -45,8 +47,7 @@ class IdCardService():
         cls	前向时是否启动分类, 此参数仅存在于代码使用模式	FALSE
     """
     def __init__(self):
-        # 初始化ocr模型和后处理模型 只需要运行一次就可以下载并将模型加载到内存中
-        self.ocr = PaddleOCR(use_angle_cls=True, lang="ch")
+        self.ocr = OCR
 
     # 判断字符串包含
     def is_in(self, full_str, sub_str):
@@ -65,7 +66,7 @@ class IdCardService():
             response = response.content
             BytesIOObj = BytesIO()
             BytesIOObj.write(response)
-            image = Image.open(BytesIOObj)
+            image = Image.open(BytesIOObj).convert('RGB')
         else:
             image = Image.open(img_path).convert('RGB')
         boxes = [line[0] for line in result]

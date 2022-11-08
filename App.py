@@ -6,14 +6,14 @@ app = Flask(__name__)
 #处理乱码
 app.config['JSON_AS_ASCII']=False
 
-idCardService = IdCardService()
+
 
 # 是否注册Nacso
-nacosOpne = False
+nacosOpne = True
 # Nacos服务器地址
 serviceAddress = "106.13.204.178:8849"
 # Nacos注册服务名
-serviceName = 'idcardOcrService'
+serviceName = 'ocrService'
 # Nacos注册服务ip
 serviceIp = '127.0.0.1'
 # Nacos注册服务端口
@@ -22,6 +22,7 @@ servicePort = 9000
 
 @app.route('/api/ocr/idcard',methods=["POST"])
 def idcard():
+    idCardService = IdCardService()
     r = {}
     if not request.files.get('image_file') and  not request.json.get('image_url'):
         return {'code':500, 'message':'缺少参数image_file或image_url', 'data': {}}
@@ -41,8 +42,10 @@ def idcard():
     except Exception as e:
         print(e)
         return {'code':500, 'message':str(e), 'data': {}}
-
-    return {'code':200, 'message':'success', 'data': r}
+        
+    res = {'code':500, 'message':'success', 'data': r}
+    print("【/api/ocr/idcard】响应：{}".format(res))
+    return res
 
 
 #nacos注册中心信息
@@ -77,4 +80,4 @@ if __name__ == '__main__':
     if nacosOpne:
         nacos()
     # 指定port, 运行app
-    app.run(debug=True, port=servicePort)
+    app.run(debug=True, port=servicePort,threaded=True)
