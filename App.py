@@ -16,7 +16,7 @@ serviceName = 'idcardOcrService'
 # Nacos注册服务ip
 serviceIp = '127.0.0.1'
 # Nacos注册服务端口
-servicePort = '9000'
+servicePort = 9000
 
 
 @app.route('/api/ocr/idcard',methods=["POST"])
@@ -72,4 +72,4 @@ if __name__ == '__main__':
     #5秒以后，异步执行service_beat()方法
     threading.Timer(5,service_beat).start()
     # 指定port, 运行app
-    app.run(debug=True, port='9000')
+    app.run(debug=True, port=servicePort)
