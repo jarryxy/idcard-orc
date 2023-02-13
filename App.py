@@ -10,7 +10,7 @@ app.config['JSON_AS_ASCII'] = False
 nacosOpne = True
 # Nacos服务器地址
 # serviceAddress = "106.13.204.178:8849"
-serviceAddress = "123.60.163.64:8849"
+serviceAddress = "127.0.0.1:8849"
 # Nacos注册服务名
 serviceName = 'ocr-service'
 # Nacos注册服务ip
@@ -18,7 +18,8 @@ serviceIp = '127.0.0.1'
 # Nacos注册服务端口
 servicePort = 9000
 # 命名空间
-namespaceId	= '9677eb21-b181-4d95-be00-02a9eed01dfa'
+namespaceId	= '8592a46c-bac8-45d1-bfd4-3d2e892b98e3'
+groupName = 'HBPU'
 
 
 @app.route('/api/ocr/idcard', methods=["POST"])
@@ -60,8 +61,8 @@ def idcard():
 
 # nacos服务
 def service_register():
-    url = "http://{}/nacos/v1/ns/instance?serviceName={}&ip={}&port={}&namespaceId={}".format(serviceAddress, serviceName, serviceIp,
-                                                                               servicePort,namespaceId)
+    url = "http://{}/nacos/v1/ns/instance?serviceName={}&ip={}&port={}&namespaceId={}&groupName={}".format(serviceAddress, serviceName, serviceIp,
+                                                                               servicePort,namespaceId,groupName)
     print(url)
     res = requests.post(url)
     print("向nacos注册中心，发起服务注册请求，注册响应状态： {}".format(res.raw))
@@ -70,8 +71,8 @@ def service_register():
 # 服务检测
 def service_beat():
     while True:
-        url = "http://{}/nacos/v1/ns/instance/beat?serviceName={}&ip={}&port={}&namespaceId={}".format(serviceAddress, serviceName,
-                                                                                        serviceIp, servicePort,namespaceId)
+        url = "http://{}/nacos/v1/ns/instance/beat?serviceName={}&ip={}&port={}&namespaceId={}&groupName={}".format(serviceAddress, serviceName,
+                                                                                        serviceIp, servicePort,namespaceId,groupName)
         res = requests.put(url)
         # print("已注册服务，执行心跳服务，续期服务响应状态： {}".format(res))
         time.sleep(5)
