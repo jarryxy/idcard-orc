@@ -12,6 +12,17 @@ pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple paddlepaddle
 python App.py
 ```
 
+```sh
+conda activate paddle_env
+sh startup.sh
+```
+
+停止
+
+```sh
+sh shutdown.sh
+```
+
 ![image-20221108180325172](README/image-20221108180325172.png)
 
 ### 三、接口
@@ -145,3 +156,12 @@ image = Image.open(BytesIOObj)
 image = Image.open(BytesIOObj).convert('RGB')
 ```
 
+## 报错处理
+
+module 'numpy' has no attribute 'int'.\n`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.\nThe aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:\n    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations"
+
+
+```sh
+pip uninstall numpy
+pip install numpy==1.23.5 -i https://mirror.baidu.com/pypi/simple
+```
